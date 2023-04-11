@@ -5,7 +5,7 @@ This is a simple Node.js wrapper for the Telegram Bot API. It provides a conveni
 To install this package, run the following command:
 
 ```css
-npm install --save node-telegram-api-wrapper
+npm install @snakebot/telegram
 ```
 
 ## Usage
