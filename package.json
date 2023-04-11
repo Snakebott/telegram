@@ -1,0 +1,25 @@
+{
+  "name": "@snakebot/telegram",
+  "version": "0.0.1",
+  "description": "telegram bot api wrapper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Snakebott/telegram.git"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "api",
+    "wrapper"
+  ],
+  "author": "snake",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Snakebott/telegram/issues"
+  },
+  "homepage": "https://github.com/Snakebott/telegram#readme"
+}
