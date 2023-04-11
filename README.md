@@ -13,7 +13,7 @@ npm install @snakebot/telegram
 ### Initialization
 First, require the package in your code:
 ```javascript
-const telegramApi = require('node-telegram-api-wrapper');
+const telegramApi = require('@snakebot/telegram');
 ```
 
 ## Configuration
