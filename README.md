@@ -55,6 +55,34 @@ telegramApi.botapi.getChat((data) => {
 }, chat_id);
 ```
 
+`sendMessage(
+    callback,
+    chat_id,
+    text,
+    disable_notification,
+    protect_content,
+    reply_to_message_id,
+    allow_sending_without_reply,
+    parse_mode,
+    entities,
+    disable_web_page_preview,
+    reply_markup)`
+
+Use this method to send text messages. On success, the sent Message is returned.
+
+```javascript
+telegramApi.botapi.sendMessage((result)=>{
+    if(result.err){
+        console.log(err.message)
+    } else {
+        console.log(result)
+    }
+}, 
+    320794723, 
+    "sorry, bot is not yet ready",
+    true,)
+```
+
 `getUpdatePolling(callback, offset, timeout)`
 
 Polls for updates from Telegram.
