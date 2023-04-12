@@ -16,11 +16,14 @@ First, require the package in your code:
 const telegramApi = require('@snakebot/telegram');
 ```
 
+## classes
+* botapi
+
 ## Configuration
 To configure the API, call the `configure()` method and pass in the configuration object:
 
 ```javascript
-telegramApi.telegram.configure({
+telegramApi.botapi.configure({
     bot: {
         api : "https://api.telegram.org",
         token: "<YOUR_BOT_TOKEN>",
@@ -38,7 +41,7 @@ telegramApi.telegram.configure({
 Gets information about the bot.
 
 ```javascript
-telegramApi.telegram.getChat((data) => {
+telegramApi.botapi.getChat((data) => {
     console.log(data);
 }, chat_id);
 ```
@@ -47,7 +50,7 @@ telegramApi.telegram.getChat((data) => {
 
 Gets information about a chat.
 ```javascript
-telegramApi.telegram.getChat((data) => {
+telegramApi.botapi.getChat((data) => {
     console.log(data);
 }, chat_id);
 ```
@@ -57,7 +60,7 @@ telegramApi.telegram.getChat((data) => {
 Polls for updates from Telegram.
 
 ```javascript
-telegramApi.telegram.getUpdatePolling((data) => {
+telegramApi.botapi.getUpdatePolling((data) => {
     console.log(data);
 }, offset, timeout);
 ```

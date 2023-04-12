@@ -58,6 +58,36 @@ const botapi = {
         })
     },
 
+    sendMessage: async(
+        callback,
+        chat_id,
+        text,
+        disable_notification,
+        protect_content,
+        reply_to_message_id,
+        allow_sending_without_reply,
+        parse_mode,
+        entities,
+        disable_web_page_preview,
+        reply_markup
+    )=>{
+        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/sendMessage`, {
+            method: "post",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+               chat_id: chat_id,
+               text: text,
+               disable_notification: disable_notification,
+               protect_content: protect_content,
+               reply_to_message_id: reply_to_message_id,
+               allow_sending_without_reply: allow_sending_without_reply,
+               parse_mode: parse_mode,
+               entities: entities,
+               disable_notification: disable_notification
+            })
+        })
+    },
+
     getUpdatePolling: async (callback, offset = -1, timeout = 0, allowed_updates = [])=>{
         await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getUpdates`, {
             method: "post",
