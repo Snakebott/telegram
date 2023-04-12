@@ -58,13 +58,14 @@ const botapi = {
         })
     },
 
-    getUpdatePolling: async (callback, offset = -1, timeout = 0)=>{
+    getUpdatePolling: async (callback, offset = -1, timeout = 0, allowed_updates = [])=>{
         await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getUpdates`, {
             method: "post",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 offset: offset,
-                timeout: timeout
+                timeout: timeout,
+                allowed_updates: allowed_updates
             })
         }).then((result)=>{
             result.text().then((data)=>{
