@@ -107,6 +107,19 @@ const botapi = {
         })
     },
 
+    logout: async(callback)=>{
+        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/logout`, {
+            method: "post",
+            headers: {"Content-Type": "application/json"}
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            })
+        }).catch((error)=>{
+            callback({err: error})
+        })
+    },
+
     getUpdatePolling: async (callback, offset = -1, timeout = 0, allowed_updates = [])=>{
         await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getUpdates`, {
             method: "post",
