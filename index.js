@@ -85,6 +85,12 @@ const botapi = {
                entities: entities,
                disable_notification: disable_notification
             })
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            }).catch((error)=>{
+                callback({err: error})
+            })
         })
     },
 
