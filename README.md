@@ -16,11 +16,14 @@ First, require the package in your code:
 const telegramApi = require('@snakebot/telegram');
 ```
 
+## classes
+* botapi
+
 ## Configuration
 To configure the API, call the `configure()` method and pass in the configuration object:
 
 ```javascript
-telegramApi.telegram.configure({
+telegramApi.botapi.configure({
     bot: {
         api : "https://api.telegram.org",
         token: "<YOUR_BOT_TOKEN>",
@@ -38,7 +41,7 @@ telegramApi.telegram.configure({
 Gets information about the bot.
 
 ```javascript
-telegramApi.telegram.getChat((data) => {
+telegramApi.botapi.getChat((data) => {
     console.log(data);
 }, chat_id);
 ```
@@ -47,9 +50,37 @@ telegramApi.telegram.getChat((data) => {
 
 Gets information about a chat.
 ```javascript
-telegramApi.telegram.getChat((data) => {
+telegramApi.botapi.getChat((data) => {
     console.log(data);
 }, chat_id);
+```
+
+`sendMessage(
+    callback,
+    chat_id,
+    text,
+    disable_notification,
+    protect_content,
+    reply_to_message_id,
+    allow_sending_without_reply,
+    parse_mode,
+    entities,
+    disable_web_page_preview,
+    reply_markup)`
+
+Use this method to send text messages. On success, the sent Message is returned.
+
+```javascript
+telegramApi.botapi.sendMessage((result)=>{
+    if(result.err){
+        console.log(err.message)
+    } else {
+        console.log(result)
+    }
+}, 
+    320794723, 
+    "sorry, bot is not yet ready",
+    true,)
 ```
 
 `getUpdatePolling(callback, offset, timeout)`
@@ -57,7 +88,7 @@ telegramApi.telegram.getChat((data) => {
 Polls for updates from Telegram.
 
 ```javascript
-telegramApi.telegram.getUpdatePolling((data) => {
+telegramApi.botapi.getUpdatePolling((data) => {
     console.log(data);
 }, offset, timeout);
 ```
