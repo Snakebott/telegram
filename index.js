@@ -39,7 +39,7 @@ const botapi = {
     },
 
     getMe: async (callback)=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getMe`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getMe`, {
             method: "get",
             headers: {"Content-Type": "application/json"}
         }).then((result)=>{
@@ -50,7 +50,7 @@ const botapi = {
     },
 
     getChat: async (callback, chat_id)=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getChat`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getChat`, {
             method: "post",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -76,7 +76,7 @@ const botapi = {
         disable_web_page_preview,
         reply_markup
     )=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/sendMessage`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/sendMessage`, {
             method: "post",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -100,7 +100,7 @@ const botapi = {
     },
 
     close: async(callback)=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/close`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/close`, {
             method: "post",
             headers: {"Content-Type": "application/json"}
         }).then((result)=>{
@@ -113,7 +113,7 @@ const botapi = {
     },
 
     logout: async(callback)=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/logout`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/logout`, {
             method: "post",
             headers: {"Content-Type": "application/json"}
         }).then((result)=>{
@@ -126,7 +126,7 @@ const botapi = {
     },
 
     getUpdatePolling: async (callback, offset = -1, timeout = 0, allowed_updates = [])=>{
-        await fetch(`${botapi.config.bot.api}/${botapi.config.bot.token}/getUpdates`, {
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getUpdates`, {
             method: "post",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
