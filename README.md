@@ -27,8 +27,6 @@ telegramApi.botapi.configure({
     bot: {
         api : "https://api.telegram.org",
         token: "<YOUR_BOT_TOKEN>",
-        pluginDir: "",
-        botowner: [],
         longPoll: false,
         longPollingTimeout: 30
     }
