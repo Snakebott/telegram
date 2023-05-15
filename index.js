@@ -7,15 +7,20 @@ const botapi = {
         bot: {
             api : "",
             token: "",
-            pluginDir: "",
-            botowner: [],
             longPoll: false,
             longPollingTimeout: 30
         }
     },
 
-    configure: (config)=>{
-        botapi.config = (config)? config : this.config
+    configure: (config = {
+        bot: {
+            api: "",
+            token: "",
+            longPoll: false,
+            longPollingTimeout: 30
+        }
+    })=>{
+        botapi.config.bot = (config && config.bot)? Object.assign(botapi.config.bot, config.bot) : null
     },
 
     getConfig: ()=>{
