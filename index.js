@@ -88,7 +88,9 @@ const botapi = {
                allow_sending_without_reply: allow_sending_without_reply,
                parse_mode: parse_mode,
                entities: entities,
-               disable_notification: disable_notification
+               disable_notification: disable_notification,
+               disable_web_page_preview: disable_web_page_preview,
+               reply_markup: reply_markup
             })
         }).then((result)=>{
             result.text().then((data)=>{
