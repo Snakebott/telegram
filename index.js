@@ -143,6 +143,19 @@ const botapi = {
         }).catch((error)=>{
             callback({err: error})
         })
+    },
+
+    getWebhookInfo: async (callback)=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getWebhookInfo`, {
+            method: "get",
+            headers: {"Content-Type": "application/json"}
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            }).catch((error)=>{
+                callback({err: error})
+            })
+        })
     }
 }
 

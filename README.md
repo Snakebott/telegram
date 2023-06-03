@@ -111,5 +111,15 @@ telegramApi.botapi.getUpdatePolling((data) => {
 }, offset, timeout);
 ```
 
+`getWebhookInfo(callback)`
+
+Use this method to get current webhook status. Requires no parameters. On success, returns a WebhookInfo object. If the bot is using getUpdates, will return an object with the url field empty.
+
+```javascript
+telegramApi.botapi.getWebhookInfo((data) => {
+    console.log(data)
+})
+```
+
 ## License
 Apache-2.0
