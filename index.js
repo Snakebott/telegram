@@ -168,9 +168,9 @@ const botapi = {
         }).then((result)=>{
             result.text().then((data)=>{
                 callback(JSON.parse(data))
-            }).catch((error)=>{
-                callback({err: error})
             })
+        }).catch((error)=>{
+            callback({err: error})
         })
     },
 
@@ -199,8 +199,6 @@ const botapi = {
         }).then((result)=>{
             result.text().then((data)=>{
                 callback(JSON.parse(data))
-            }).catch((error)=>{
-                callback({err: error})
             })
         }).catch((error)=>{
             callback({err: error})
