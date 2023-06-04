@@ -1,5 +1,5 @@
 /// telegram ///
-const http = require("https")
+// const http = require("https")
 const url = require("url")
 
 const botapi = {
@@ -161,6 +161,7 @@ const botapi = {
     deleteWebhook: async (callback, drop_pending_updates = false)=>{
         await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/deleteWebhook`, {
             method: 'post',
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 drop_pending_updates: drop_pending_updates
             })
@@ -170,6 +171,39 @@ const botapi = {
             }).catch((error)=>{
                 callback({err: error})
             })
+        })
+    },
+
+    setWebhook: async (
+        callback,
+        url,
+        certificate,
+        ip_address,
+        max_connections,
+        allowed_updates,
+        drop_pending_updates,
+        secret_token
+    )=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/setWebhook`, {
+            method: 'post',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                url: url,
+                certificate: certificate,
+                ip_address: ip_address,
+                max_connections: max_connections,
+                allowed_updates: allowed_updates,
+                drop_pending_updates: drop_pending_updates,
+                secret_token: secret_token
+            })
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            }).catch((error)=>{
+                callback({err: error})
+            })
+        }).catch((error)=>{
+            callback({err: error})
         })
     }
 }
