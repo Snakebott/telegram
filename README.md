@@ -121,5 +121,15 @@ telegramApi.botapi.getWebhookInfo((data) => {
 })
 ```
 
+`deleteWebhook(callback, drop_pending_updates)`
+
+Use this method to remove webhook integration if you decide to switch back to getUpdates. Returns True on success.
+
+```javascript
+telegramApi.botapi.deleteWebhook((data) => {
+    console.log(data)
+})
+```
+
 ## License
 Apache-2.0

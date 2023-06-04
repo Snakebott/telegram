@@ -156,6 +156,18 @@ const botapi = {
                 callback({err: error})
             })
         })
+    },
+
+    deleteWebhook: async (callback, drop_pending_updates = false)=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/deleteWebhook`, {
+            drop_pending_updates: drop_pending_updates
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            }).catch((error)=>{
+                callback({err: error})
+            })
+        })
     }
 }
 
