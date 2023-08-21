@@ -1,5 +1,5 @@
 /// telegram ///
-const http = require("https")
+// const http = require("https")
 const url = require("url")
 
 const botapi = {
@@ -88,7 +88,9 @@ const botapi = {
                allow_sending_without_reply: allow_sending_without_reply,
                parse_mode: parse_mode,
                entities: entities,
-               disable_notification: disable_notification
+               disable_notification: disable_notification,
+               disable_web_page_preview: disable_web_page_preview,
+               reply_markup: reply_markup
             })
         }).then((result)=>{
             result.text().then((data)=>{
@@ -133,6 +135,66 @@ const botapi = {
                 offset: offset,
                 timeout: timeout,
                 allowed_updates: allowed_updates
+            })
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            })
+        }).catch((error)=>{
+            callback({err: error})
+        })
+    },
+
+    getWebhookInfo: async (callback)=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getWebhookInfo`, {
+            method: "get",
+            headers: {"Content-Type": "application/json"}
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            }).catch((error)=>{
+                callback({err: error})
+            })
+        })
+    },
+
+    deleteWebhook: async (callback, drop_pending_updates = false)=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/deleteWebhook`, {
+            method: 'post',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                drop_pending_updates: drop_pending_updates
+            })
+        }).then((result)=>{
+            result.text().then((data)=>{
+                callback(JSON.parse(data))
+            })
+        }).catch((error)=>{
+            callback({err: error})
+        })
+    },
+
+    setWebhook: async (
+        callback,
+        url,
+        certificate,
+        ip_address,
+        max_connections,
+        allowed_updates,
+        drop_pending_updates,
+        secret_token
+    )=>{
+        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/setWebhook`, {
+            method: 'post',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                url: url,
+                certificate: certificate,
+                ip_address: ip_address,
+                max_connections: max_connections,
+                allowed_updates: allowed_updates,
+                drop_pending_updates: drop_pending_updates,
+                secret_token: secret_token
             })
         }).then((result)=>{
             result.text().then((data)=>{
