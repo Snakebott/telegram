@@ -27,44 +27,43 @@ const botapi = {
         return botapi.config
     },
 
-    httpOpt: (headers)=>{
-        return {
-            host: url.parse(botapi.config.bot.api).host,
-            port: url.parse(botapi.config.bot.api).port,
-            method: 'POST',
-            protocol: url.parse(botapi.config.bot.api).protocol,
-            path: url.parse(botapi.config.bot.api).path,
-            headers: {...headers, "Content-Type": "application/json"}
+    _request: async (methodName, body = {})=>{
+        const url = `${botapi.config.bot.api}/bot${botapi.config.bot.token}/${methodName}`
+
+        const httpOpt = {
+            method: "POST"
         }
+
+        if (body instanceof FormData){
+            httpOpt.body = body
+        } else {
+            httpOpt.headers = {"Content-Type": "application/json"}
+            httpOpt.body = JSON.stringify(body)
+        }
+
+        const response = await fetch(url, httpOpt)
+        const data = await response.json()
+
+        if (!response.ok) {
+            throw new Error(`[BotAPI] Error# status: ${response.status}, error: ${response.statusText}`)
+        }
+
+        if (!data.ok) {
+            throw new Error(`Telegram semantic error: ${data.description}`)
+        }
+
+        return data
     },
 
-    getMe: async (callback)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getMe`, {
-            method: "get",
-            headers: {"Content-Type": "application/json"}
-        }).then((result)=>{
-            result.text().then((data)=>{callback(JSON.parse(data))})
-        }).catch((error)=>{
-            callback({err: error})
-        })
+    getMe: async ()=>{
+        return await botapi._request("getMe")
     },
 
-    getChat: async (callback, chat_id)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getChat`, {
-            method: "post",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                chat_id: chat_id
-            })
-        }).then((result)=>{
-            result.text().then((data)=>{callback(JSON.parse(data))})
-        }).catch((error)=>{
-            callback({err: error})
-        })
+    getChat: async (chat_id)=>{
+        return await botapi._request("getChat", {chat_id: chat_id})
     },
 
-    sendMessage: async(
-        callback,
+    sendMessage: async ({
         chat_id,
         text,
         disable_notification,
@@ -75,107 +74,52 @@ const botapi = {
         entities,
         disable_web_page_preview,
         reply_markup
-    )=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/sendMessage`, {
-            method: "post",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-               chat_id: chat_id,
-               text: text,
-               disable_notification: disable_notification,
-               protect_content: protect_content,
-               reply_to_message_id: reply_to_message_id,
-               allow_sending_without_reply: allow_sending_without_reply,
-               parse_mode: parse_mode,
-               entities: entities,
-               disable_notification: disable_notification,
-               disable_web_page_preview: disable_web_page_preview,
-               reply_markup: reply_markup
-            })
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            }).catch((error)=>{
-                callback({err: error})
-            })
+    } = {} )=>{
+        if (!chat_id || !text){
+            throw new Error(`[BotAPI] Error# chat_id and text must required`)
+        }
+
+        return await botapi._request("sendMessage", {
+            chat_id,
+            text,
+            disable_notification,
+            protect_content,
+            reply_to_message_id,
+            allow_sending_without_reply,
+            parse_mode,
+            entities,
+            disable_web_page_preview,
+            reply_markup
         })
     },
 
-    close: async(callback)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/close`, {
-            method: "post",
-            headers: {"Content-Type": "application/json"}
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            })
-        }).catch((error)=>{
-            callback({err: error})
+    close: async ()=>{
+        return await botapi._request("close")
+    },
+
+    logOut: async ()=>{
+        return await botapi._request("logOut")
+    },
+
+    getUpdatePolling: async (offset = -1, timeout = 30, allowed_updates = [])=>{
+        return await botapi._request("getUpdates", {
+            offset: offset,
+            timeout: timeout,
+            allowed_updates: allowed_updates
         })
     },
 
-    logout: async(callback)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/logout`, {
-            method: "post",
-            headers: {"Content-Type": "application/json"}
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            })
-        }).catch((error)=>{
-            callback({err: error})
-        })
+    getWebhookInfo: async ()=>{
+        return await botapi._request("getWebhookInfo")
     },
 
-    getUpdatePolling: async (callback, offset = -1, timeout = 0, allowed_updates = [])=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getUpdates`, {
-            method: "post",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                offset: offset,
-                timeout: timeout,
-                allowed_updates: allowed_updates
-            })
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            })
-        }).catch((error)=>{
-            callback({err: error})
-        })
+    deleteWebhook: async ({
+        drop_pending_updates
+    } = {})=>{
+        return await botapi._request("deleteWebhook", {drop_pending_updates: drop_pending_updates})
     },
 
-    getWebhookInfo: async (callback)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/getWebhookInfo`, {
-            method: "get",
-            headers: {"Content-Type": "application/json"}
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            }).catch((error)=>{
-                callback({err: error})
-            })
-        })
-    },
-
-    deleteWebhook: async (callback, drop_pending_updates = false)=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/deleteWebhook`, {
-            method: 'post',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                drop_pending_updates: drop_pending_updates
-            })
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            })
-        }).catch((error)=>{
-            callback({err: error})
-        })
-    },
-
-    setWebhook: async (
-        callback,
+    setWebhook: async ({
         url,
         certificate,
         ip_address,
@@ -183,25 +127,18 @@ const botapi = {
         allowed_updates,
         drop_pending_updates,
         secret_token
-    )=>{
-        await fetch(`${botapi.config.bot.api}/bot${botapi.config.bot.token}/setWebhook`, {
-            method: 'post',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                url: url,
-                certificate: certificate,
-                ip_address: ip_address,
-                max_connections: max_connections,
-                allowed_updates: allowed_updates,
-                drop_pending_updates: drop_pending_updates,
-                secret_token: secret_token
-            })
-        }).then((result)=>{
-            result.text().then((data)=>{
-                callback(JSON.parse(data))
-            })
-        }).catch((error)=>{
-            callback({err: error})
+    } = {})=>{
+        if(!url){
+            throw new Error("[BotApi] Error# empty url")
+        }
+        return await botapi._request("setWebhook", {
+            url: url,
+            certificate: certificate,
+            ip_address: ip_address,
+            max_connections: max_connections,
+            allowed_updates: allowed_updates,
+            drop_pending_updates: drop_pending_updates,
+            secret_token: secret_token
         })
     }
 }
