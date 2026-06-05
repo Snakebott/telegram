@@ -1,147 +1,238 @@
-# Node.js Telegram API Wrapper
-This is a simple Node.js wrapper for the Telegram Bot API. It provides a convenient way to interact with Telegram Bots by abstracting away the low-level details of the Telegram Bot API.
+# Telegram Bot API Wrapper
+
+A lightweight, Promise-based Node.js wrapper for the Telegram Bot API with support for both webhook and long-polling update methods.
+
+## Features
+
+- 🚀 Simple and intuitive API
+- 📡 Support for both webhook and long-polling updates
+- 🔄 Promise-based async/await interface
+- 🛡️ Built-in error handling
+- 📦 Zero dependencies (uses native `fetch`)
+- ⚡ Lightweight and fast
 
 ## Installation
-To install this package, run the following command:
 
-```css
-npm install @snakebot/telegram
+```bash
+npm install your-bot-package
 ```
-
-## Usage
-
-### Initialization
-First, require the package in your code:
+# Quick Start
+const { botapi } = require('./your-bot-file');
 ```javascript
-const telegramApi = require('@snakebot/telegram');
-```
-
-## classes
-* botapi
-
-## Configuration
-To configure the API, call the `configure()` method and pass in the configuration object:
-
-```javascript
-telegramApi.botapi.configure({
+// Configure your bot
+botapi.configure({
     bot: {
-        api : "https://api.telegram.org",
-        token: "<YOUR_BOT_TOKEN>",
+        api: "https://api.telegram.org",
+        token: "YOUR_BOT_TOKEN",
         longPoll: false,
         longPollingTimeout: 30
     }
 });
-```
 
-## Methods
-`getMe(callback)`
-
-Gets information about the bot.
-
-```javascript
-telegramApi.botapi.getChat((data) => {
-    console.log(data);
-}, chat_id);
-```
-
-`getChat(callback, chat_id)`
-
-Gets information about a chat.
-```javascript
-telegramApi.botapi.getChat((data) => {
-    console.log(data);
-}, chat_id);
-```
-
-`sendMessage(
-    callback,
-    chat_id,
-    text,
-    disable_notification,
-    protect_content,
-    reply_to_message_id,
-    allow_sending_without_reply,
-    parse_mode,
-    entities,
-    disable_web_page_preview,
-    reply_markup)`
-
-Use this method to send text messages. On success, the sent Message is returned.
-
-```javascript
-telegramApi.botapi.sendMessage((result)=>{
-    if(result.err){
-        console.log(err.message)
-    } else {
-        console.log(result)
+// Send a message
+async function sendHello() {
+    try {
+        const result = await botapi.sendMessage({
+            chat_id: "123456789",
+            text: "Hello from my bot!"
+        });
+        console.log("Message sent:", result);
+    } catch (error) {
+        console.error("Error:", error.message);
     }
-}, 
-    320794723, 
-    "sorry, bot is not yet ready",
-    true,)
+}
+
+sendHello();
 ```
 
-`close(callback)`
+# Configuration
 
-Use this method to close the bot instance before moving it from one local server to another. You need to delete the webhook before calling this method to ensure that the bot isn't launched again after server restart. The method will return error 429 in the first 10 minutes after the bot is launched. Returns True on success. Requires no parameters
+## Initialize the bot
+```javascript
+botapi.configure({
+    bot: {
+        api: "https://api.telegram.org",  // API endpoint
+        token: "YOUR_BOT_TOKEN",           // Bot token from @BotFather
+        longPoll: false,                   // Enable long polling mode
+        longPollingTimeout: 30             // Long polling timeout in seconds
+    }
+});
+```
+# API Methods
+
+## Core Methods
+### getMe()
+```javascript
+const botInfo = await botapi.getMe();
+console.log(botInfo.result.username);
+```
+
+### getChat(chat_id)
+Get information about a chat.
+```javascript
+const chatInfo = await botapi.getChat("123456789");
+```
+
+### sendMessage(params)
+Send a text message
+
+#### Parameters:
+
+- chat_id (required) - Unique identifier for the target chat
+- text (required) - Text of the message to be sent
+- disable_notification - Sends the message silently
+- protect_content - Protects the message content from forwarding
+- reply_to_message_id - Reply to a specific message
+- allow_sending_without_reply - Allow sending without reply
+- parse_mode - Parse mode ('HTML' or 'MarkdownV2')
+- entities - Special message entities
+- disable_web_page_preview - Disables link previews
+- reply_markup - Additional interface options
 
 ```javascript
-telegramApi.botapi.close((data) => {
-    console.log(data);
+await botapi.sendMessage({
+    chat_id: "123456789",
+    text: "<b>Bold text</b> and <i>italic</i>",
+    parse_mode: "HTML",
+    disable_web_page_preview: true
 });
 ```
 
-`logout(callback)`
-
-Use this method to log out from the cloud Bot API server before launching the bot locally. You must log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns True on success. Requires no parameters.
-
+## Webhook Methods
+### setWebhook(params)
+Set a webhook URL for receiving updates
 ```javascript
-telegramApi.botapi.logout((data) => {
-    console.log(data);
+await botapi.setWebhook({
+    url: "https://your-domain.com/webhook",
+    max_connections: 40,
+    allowed_updates: ["message", "callback_query"],
+    secret_token: "your-secret-token"
 });
 ```
 
-`getUpdatePolling(callback, offset, timeout)`
-
-Polls for updates from Telegram.
-
+### deleteWebhook(params)
+Remove webhook integration.
 ```javascript
-telegramApi.botapi.getUpdatePolling((data) => {
-    console.log(data);
-}, offset, timeout);
+await botapi.deleteWebhook({ drop_pending_updates: true });
 ```
 
-`getWebhookInfo(callback)`
-
-Use this method to get current webhook status. Requires no parameters. On success, returns a WebhookInfo object. If the bot is using getUpdates, will return an object with the url field empty.
-
+### getWebhookInfo()
+Get current webhook status.
 ```javascript
-telegramApi.botapi.getWebhookInfo((data) => {
-    console.log(data)
-})
+const webhookInfo = await botapi.getWebhookInfo();
 ```
 
-`deleteWebhook(callback, drop_pending_updates)`
-
-Use this method to remove webhook integration if you decide to switch back to getUpdates. Returns True on success.
-
+## Long Polling Methods
+### getUpdatePolling(offset, timeout, allowed_updates)
+Get updates using long polling.
 ```javascript
-telegramApi.botapi.deleteWebhook((data) => {
-    console.log(data)
-})
+const updates = await botapi.getUpdatePolling(-1, 30, ["message"]);
 ```
 
-`setWebhook(callback, url, certificate, ip_address, max_connections, allowed_updates)`
-
-Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized Update. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns True on success.
-
-If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter secret_token. If specified, the request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as content
-
+## Session Management
+### close()
+Close the bot instance.
 ```javascript
-telegramApi.botapi.setWebhook((data) => {
-    console.log(data)
-}, 'http://example.com/bot')
+await botapi.close();
 ```
 
-## License
-Apache-2.0
+### logOut()
+Log out from the Bot API.
+```javascript
+await botapi.logOut();
+```
+
+# Error Handling
+The wrapper throws errors in two cases:
+
+### HTTP errors - When the request fails
+Telegram semantic errors - When Telegram returns ok: false
+```javascript
+try {
+    await botapi.sendMessage({ chat_id: "123", text: "Hello" });
+} catch (error) {
+    if (error.message.includes("Telegram semantic error")) {
+        console.error("Telegram API error:", error.message);
+    } else {
+        console.error("Network or other error:", error.message);
+    }
+}
+```
+
+## Examples
+### Echo Bot with Long Polling
+```javascript
+async function startEchoBot() {
+    let offset = 0;
+    
+    while (true) {
+        try {
+            const updates = await botapi.getUpdatePolling(offset, 30);
+            
+            for (const update of updates.result) {
+                if (update.message && update.message.text) {
+                    await botapi.sendMessage({
+                        chat_id: update.message.chat.id,
+                        text: `Echo: ${update.message.text}`
+                    });
+                }
+                offset = update.update_id + 1;
+            }
+        } catch (error) {
+            console.error("Polling error:", error);
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+}
+
+startEchoBot();
+```
+
+### Webhook Handler Example (Express)
+```javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/webhook', async (req, res) => {
+    const update = req.body;
+    
+    if (update.message && update.message.text) {
+        await botapi.sendMessage({
+            chat_id: update.message.chat.id,
+            text: `You said: ${update.message.text}`
+        });
+    }
+    
+    res.sendStatus(200);
+});
+
+app.listen(3000);
+```
+
+## Requirements
+
+- Node.js 18+ (for native fetch support)
+- A Telegram Bot Token from [@BotFather](https://t.me/botfather)
+
+### License
+MIT
+
+## Contributing
+Contributions are welcome! Please submit a Pull Request or open an Issue on GitHub.
+
+## Support
+For Telegram Bot API documentation, visit [core.telegram.org/bots/api](core.telegram.org/bots/api)
+
+```text
+
+This README provides:
+- Clear installation and setup instructions
+- Complete API documentation with examples
+- Error handling guidance
+- Practical usage examples for both polling and webhook modes
+- Requirements and support information
+
+The documentation is structured to help developers quickly understand and implement the bot wrapper in their projects.
+```
